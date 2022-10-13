@@ -1,4 +1,6 @@
+from sys import path
 import h5py
+import scipy.io
 import math
 import pandas as pd
 from tensorflow.keras.utils import Sequence
@@ -21,8 +23,10 @@ class ECGSequence(Sequence):
         else:
             self.y = pd.read_csv(path_to_csv).values
         # Get tracings
-        self.f = h5py.File(path_to_hdf5, "r")
+        # TODO
+        self.f = scipy.io.loadmat(path_to_hdf5, None)
         self.x = self.f[hdf5_dset]
+
         self.batch_size = batch_size
         if end_idx is None:
             end_idx = len(self.x)

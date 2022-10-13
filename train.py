@@ -16,7 +16,7 @@ if __name__ == "__main__":
                         help='number between 0 and 1 determining how much of'
                              ' the data is to be used for validation. The remaining '
                              'is used for validation. Default: 0.02')
-    parser.add_argument('--dataset_name', type=str, default='tracings',
+    parser.add_argument('--dataset_name', type=str, default='val',
                         help='name of the hdf5 dataset containing tracings')
     args = parser.parse_args()
     # Optimization settings
