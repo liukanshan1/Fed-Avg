@@ -1,4 +1,5 @@
 # %% Import packages
+from tkinter.tix import Y_REGION
 import numpy as np
 from sklearn.metrics import (confusion_matrix,
                              precision_recall_curve)
@@ -43,7 +44,6 @@ def affer_results(y_true, y_pred):
         Matrix containing: 0 - true negative, 1 - true positive,
         2 - false negative, and 3 - false positive.
     """
-
     # True negative
     tn = (y_true == y_pred) & (y_pred == 0)
     # True positive
@@ -52,7 +52,6 @@ def affer_results(y_true, y_pred):
     fp = (y_true != y_pred) & (y_pred == 1)
     # False negative
     fn = (y_true != y_pred) & (y_pred == 0)
-
     # Generate matrix of "tp, fp, tn, fn"
     m, n = np.shape(y_true)
     cm = np.zeros((m, n), dtype=int)
@@ -63,9 +62,17 @@ def affer_results(y_true, y_pred):
     return tn, tp, fn, fp, cm
 
 
+def nomalize(y_pred):
+    old = y_pred
+    m, n = np.shape(y_pred)
+    y_pred = np.zeros((m, n), dtype=int)
+    for i in range(m):
+        y_pred[i][old[i].argmax()] = 1
+    return y_pred
+
+
 # Get true values
 y_true = np.array(utils.get_all_hea("./data/test_set/"))
-y_pred = np.load('./dnn_output.npy')
+y_pred = nomalize(np.load('./dnn_output.npy'))
 tn, tp, fn, fp, cm = affer_results(y_true, y_pred)
-print(cm.shape)
-print(cm)
+print("tn, tp, fn, fp")
