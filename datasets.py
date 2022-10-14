@@ -10,7 +10,7 @@ import utils
 class ECGSequence(Sequence):
     @classmethod
     def get_train_and_val(cls, path_to_data, dset, path_to_annotations, batch_size=8, val_split=0.02):
-        n_samples = len(utils.get_file_num(path_to_annotations, '.hea'))
+        n_samples = utils.get_file_num(path_to_annotations, '.hea')
         n_train = math.ceil(n_samples*(1-val_split))
         train_seq = cls(path_to_data, dset, path_to_annotations, batch_size, end_idx=n_train)
         valid_seq = cls(path_to_data, dset, path_to_annotations, batch_size, start_idx=n_train)
