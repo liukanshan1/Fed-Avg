@@ -11,11 +11,34 @@ def get_all_mat(path, dset):
 
 def get_all_hea(path):
     hea_files = get_all_files(path, '.hea')
+    heas = []
     for hea_file in hea_files:
-        with open(hea_file, 'r') as f:
+        with open(hea_file, 'r') as f[0:5]:
             line = f.readlines()[15] # 读取第15行
             dxs = line[5:-1].split(',')
-
+            for dx in dxs:
+                if dx == '164889003':
+                    heas.append([1, 0, 0, 0, 0, 0, 0])
+                    break
+                elif dx == '164890007':
+                    heas.append([0, 1, 0, 0, 0, 0, 0])
+                    break
+                elif dx == '713422000':
+                    heas.append([0, 0, 1, 0, 0, 0, 0])
+                    break
+                elif dx == '426177001':
+                    heas.append([0, 0, 0, 1, 0, 0, 0])
+                    break
+                elif dx == '426783006':
+                    heas.append([0, 0, 0, 0, 1, 0, 0])
+                    break
+                elif dx == '427084000':
+                    heas.append([0, 0, 0, 0, 0, 1, 0])
+                    break
+                elif dx == '426761007':
+                    heas.append([0, 0, 0, 0, 0, 0, 1])
+                    break
+    return heas
 
 
 def get_all_files(path, file_type):
@@ -28,5 +51,4 @@ def get_all_files(path, file_type):
 if __name__ == '__main__':
     path = './newData/'
     dset = 'val'
-    get_all_hea(path)
-    #print(get_all_files(path, ".mat")[0:10])
+    print(get_all_hea(path))
