@@ -38,9 +38,9 @@ class ECGSequence(Sequence):
         start = self.start_idx + idx * self.batch_size
         end = min(start + self.batch_size, self.end_idx)
         if self.y is None:
-            return np.array(self.x[start:end, :, :4992])
+            return np.array(self.x[start:end, :, :4096])
         else:
-            return np.array(self.x[start:end, :, :4992]), np.array(self.y[start:end])
+            return np.array(self.x[start:end, :, :4096]), np.array(self.y[start:end])
 
     def __len__(self):
         return math.ceil((self.end_idx - self.start_idx) / self.batch_size)
