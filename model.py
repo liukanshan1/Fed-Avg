@@ -15,15 +15,15 @@ class ResidualUnit(object):
     kernel_initializer: str, optional
         Initializer for the weights matrices. See Keras initializers. By default it uses
         'he_normal'.
-    dropout_keep_prob: float [0, 1), optional
+    dropout_keep_prob: float [0, 1), optional   # TODO
         Dropout rate used in all Dropout layers. Default is 0.8
     kernel_size: int, optional
         Kernel size for convolutional layers. Default is 17.
-    preactivation: bool, optional
+    preactivation: bool, optional   # TODO
         When preactivation is true use full preactivation architecture proposed
         in [1]. Otherwise, use architecture proposed in the original ResNet
         paper [2]. By default it is true.
-    postactivation_bn: bool, optional
+    postactivation_bn: bool, optional   # TODO
         Defines if you use batch normalization before or after the activation layer (there
         seems to be some advantages in some cases:
         https://github.com/ducha-aiki/caffenet-benchmark/blob/master/batchnorm.md).
@@ -113,7 +113,7 @@ class ResidualUnit(object):
 
 
 def get_model(n_classes, last_layer='sigmoid'):
-    kernel_size = 16
+    kernel_size = 16  # TODO
     kernel_initializer = 'he_normal'
     signal = Input(shape=(5000, 12), dtype=np.float32, name='signal')
     x = signal

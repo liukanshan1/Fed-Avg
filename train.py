@@ -20,15 +20,15 @@ if __name__ == "__main__":
                         help='name of the dataset containing tracings')
     args = parser.parse_args()
     # Optimization settings
-    loss = 'binary_crossentropy'
-    lr = 0.001
-    batch_size = 64
+    loss = 'binary_crossentropy'  # TODO
+    lr = 0.001  # TODO
+    batch_size = 64  # TODO
     opt = Adam(lr)
     callbacks = [ReduceLROnPlateau(monitor='val_loss',
                                    factor=0.1,
-                                   patience=7,
+                                   patience=7,  # TODO last
                                    min_lr=lr / 100),
-                 EarlyStopping(patience=9,  # Patience should be larger than the one in ReduceLROnPlateau
+                 EarlyStopping(patience=9,  # Patience should be larger than the one in ReduceLROnPlateau  # TODO last
                                min_delta=0.00001)]
 
     train_seq, valid_seq = ECGSequence.get_train_and_val(
