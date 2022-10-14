@@ -4,13 +4,18 @@ import os
 def get_all_mat(path, dset):
     mat_files = get_all_files(path, '.mat')
     mats = []
-    for mat_file in mat_files[0:2]:
+    for mat_file in mat_files:
         mats.append(scipy.io.loadmat(mat_file, None)[dset])
     return mats
 
 
 def get_all_hea(path):
-    return get_all_files(path, '.hea')
+    hea_files = get_all_files(path, '.hea')
+    for hea_file in hea_files[0:2]:
+        with open(hea_file, 'r') as f:
+            line = f.readlines()[15]
+            print(line)
+            #.split()
 
 
 def get_all_files(path, file_type):
@@ -23,5 +28,5 @@ def get_all_files(path, file_type):
 if __name__ == '__main__':
     path = './newData/'
     dset = 'val'
-    print(get_all_mat(path, dset))
+    print(get_all_hea(path))
     #print(get_all_files(path, ".mat")[0:10])

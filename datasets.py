@@ -25,7 +25,6 @@ class ECGSequence(Sequence):
             #pd.read_csv(path_to_csv).values
         # Get tracings
         self.x = utils.get_all_mat(path_to_hdf5, hdf5_dset)
-
         self.batch_size = batch_size
         if end_idx is None:
             end_idx = len(self.x)
