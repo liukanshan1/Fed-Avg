@@ -20,4 +20,7 @@ def get_all_files(path, file_type):
             files.append(file_abs)
     return files
 
-
+if __name__ == '__main__':
+    path = './newData/'
+    dset = 'val'
+    print(get_all_mat(path, dset))
