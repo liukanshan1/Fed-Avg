@@ -81,6 +81,10 @@ class ResidualUnit(object):
     def __call__(self, inputs):
         """Residual unit."""
         x, y = inputs
+        print(x)
+        print(y)
+        print(x.shape)
+        print(y.shape)
         n_samples_in = y.shape[2]
         downsample = n_samples_in // self.n_samples_out
         n_filters_in = y.shape[1]
