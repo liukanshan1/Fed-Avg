@@ -121,13 +121,13 @@ def get_model(n_classes, last_layer='sigmoid'):
                kernel_initializer=kernel_initializer)(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
-    x, y = ResidualUnit(1024, 128, kernel_size=kernel_size,
+    x, y = ResidualUnit(128, 1024, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, x])
-    x, y = ResidualUnit(256, 196, kernel_size=kernel_size,
+    x, y = ResidualUnit(196, 256, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, y])
-    x, y = ResidualUnit(64, 256, kernel_size=kernel_size,
+    x, y = ResidualUnit(256, 64, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, y])
-    x, _ = ResidualUnit(16, 320, kernel_size=kernel_size,
+    x, _ = ResidualUnit(320, 16, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, y])
     x = Flatten()(x)
     diagn = Dense(n_classes, activation=last_layer, kernel_initializer=kernel_initializer)(x)
