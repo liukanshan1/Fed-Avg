@@ -48,6 +48,7 @@ class ECGSequence(Sequence):
 if __name__ == "__main__":
     y = np.array(utils.get_all_hea("./newData/"))
     x = np.array(utils.get_all_mat("./newData/", 'val'))
+    print(x[0].shape)
     print(len(x))
     print(len(x[0]))
     print(len(x[0][0]))
