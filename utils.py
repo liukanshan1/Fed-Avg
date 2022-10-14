@@ -24,3 +24,4 @@ if __name__ == '__main__':
     path = './newData/'
     dset = 'val'
     print(get_all_mat(path, dset))
+    print(get_all_files(path, ".mat"))
