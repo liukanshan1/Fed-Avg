@@ -47,8 +47,3 @@ def get_all_files(path, file_type):
         if file_name.endswith(file_type):
             files.append(path + file_name)
     return files
-
-if __name__ == '__main__':
-    path = './newData/'
-    dset = 'val'
-    print(get_all_hea(path))

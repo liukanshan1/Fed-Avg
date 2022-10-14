@@ -9,11 +9,11 @@ import utils
 
 class ECGSequence(Sequence):
     @classmethod
-    def get_train_and_val(cls, path_to_hdf5, hdf5_dset, path_to_csv, batch_size=8, val_split=0.02):
-        n_samples = len(pd.read_csv(path_to_csv))
+    def get_train_and_val(cls, path_to_data, dset, path_to_annotations, batch_size=8, val_split=0.02):
+        n_samples = len(pd.read_csv(path_to_annotations))
         n_train = math.ceil(n_samples*(1-val_split))
-        train_seq = cls(path_to_hdf5, hdf5_dset, path_to_csv, batch_size, end_idx=n_train)
-        valid_seq = cls(path_to_hdf5, hdf5_dset, path_to_csv, batch_size, start_idx=n_train)
+        train_seq = cls(path_to_data, dset, path_to_annotations, batch_size, end_idx=n_train)
+        valid_seq = cls(path_to_data, dset, path_to_annotations, batch_size, start_idx=n_train)
         return train_seq, valid_seq
 
     def __init__(self, path_to_hdf5, hdf5_dset, path_to_csv=None, batch_size=8,
@@ -22,7 +22,6 @@ class ECGSequence(Sequence):
             self.y = None
         else:
             self.y = utils.get_all_hea(path_to_csv)
-            #pd.read_csv(path_to_csv).values
         # Get tracings
         self.x = utils.get_all_mat(path_to_hdf5, hdf5_dset)
         self.batch_size = batch_size
@@ -45,6 +44,3 @@ class ECGSequence(Sequence):
 
     def __len__(self):
         return math.ceil((self.end_idx - self.start_idx) / self.batch_size)
-
-"""     def __del__(self):
-        self.f.close() """
