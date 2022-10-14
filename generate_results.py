@@ -56,18 +56,18 @@ y_true = np.array(utils.get_all_hea("./data/test_set/"))
 y_pred = nomalize(np.load('./dnn_output.npy'))
 tn, tp, fn, fp, cm = affer_results(y_true, y_pred)
 m, n = np.shape(y_true)
-conf = [0,0,0,0]
+conf = [0, 0, 0, 0]
 for i in range(m):
     for j in range(n):
         conf[cm[i][j]] += 1
-tnc,tpc,fnc,fpc=conf
+tnc, tpc, fnc, fpc = conf
 print("tp, fn")
 print("fp, tn")
-print(tpc,fnc)
-print(fpc,tnc)
-print("accuracy:", (tpc+tnc)/(tpc+tnc+fpc+fnc))
-precision = tpc/(tpc+fpc)
-print("precision:",precision)
-recall = tpc/(tpc+fnc)
-print("recall:",recall)
-print("F1-Score:",2*recall*precision/(recall + precision))
+print(tpc, fnc)
+print(fpc, tnc)
+print("accuracy:", (tpc + tnc) / (tpc + tnc + fpc + fnc))
+precision = tpc / (tpc + fpc)
+print("precision:", precision)
+recall = tpc / (tpc + fnc)
+print("recall:", recall)
+print("F1-Score:", 2 * recall * precision / (recall + precision))
