@@ -115,7 +115,7 @@ class ResidualUnit(object):
 def get_model(n_classes, last_layer='sigmoid'):
     kernel_size = 16
     kernel_initializer = 'he_normal'
-    signal = Input(shape=(4096, 12), dtype=np.float32, name='signal')
+    signal = Input(shape=(5000, 12), dtype=np.float32, name='signal')
     x = signal
     x = Conv1D(64, kernel_size, padding='same', use_bias=False,
                kernel_initializer=kernel_initializer)(x)
