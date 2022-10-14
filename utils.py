@@ -11,11 +11,11 @@ def get_all_mat(path, dset):
 
 def get_all_hea(path):
     hea_files = get_all_files(path, '.hea')
-    for hea_file in hea_files[0:2]:
+    for hea_file in hea_files:
         with open(hea_file, 'r') as f:
-            words = f.readlines()[15].split(' ')[1:]
-            print(words)
-            #.split()
+            line = f.readlines()[15] # 读取第15行
+            dxs = line[5:-1].split(',')
+
 
 
 def get_all_files(path, file_type):
