@@ -137,3 +137,4 @@ newData/
 logs/
 
 *.npy
+dnn_predicts/README.md
