@@ -5,7 +5,7 @@ import os
 def get_all_mat(path, dset):
     mat_files = get_all_files(path, '.mat')
     mats = []
-    for mat_file in mat_files:
+    for mat_file in mat_files[0:5]:
         mats.append(scipy.io.loadmat(mat_file, None)[dset])
     return mats
 
@@ -13,7 +13,7 @@ def get_all_mat(path, dset):
 def get_all_hea(path):
     hea_files = get_all_files(path, '.hea')
     heas = []
-    for hea_file in hea_files:
+    for hea_file in hea_files[0:5]:
         with open(hea_file, 'r') as f:
             line = f.readlines()[15]  # 读取第15行
             dxs = line[5:-1].split(',')
