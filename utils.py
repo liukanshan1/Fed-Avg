@@ -58,7 +58,7 @@ def get_file_num(path, file_type):
     return num
 
 
-if __name__ == "main":
+if __name__ == '__main__':
     path = './newData/'
     dset = 'val'
     a = get_all_mat(path, dset)
