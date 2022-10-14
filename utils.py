@@ -5,7 +5,7 @@ import os
 def get_all_mat(path, dset):
     mat_files = get_all_files(path, '.mat')
     mats = []
-    for mat_file in mat_files:
+    for mat_file in mat_files[0:5]:
         mats.append(scipy.io.loadmat(mat_file, None)[dset])
     return mats
 
@@ -56,3 +56,11 @@ def get_file_num(path, file_type):
         if file_name.endswith(file_type):
             num += 1
     return num
+
+
+if __name__ == "main":
+    path = './newData/'
+    dset = 'val'
+    a = get_all_mat(path, dset)
+    print(type(a))
+    print(type(a[0]))
