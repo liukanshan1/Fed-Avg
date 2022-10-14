@@ -13,8 +13,8 @@ def get_all_hea(path):
     hea_files = get_all_files(path, '.hea')
     for hea_file in hea_files[0:2]:
         with open(hea_file, 'r') as f:
-            line = f.readlines()[15]
-            print(line)
+            words = f.readlines()[15].split(' ')[1:]
+            print(words)
             #.split()
 
 
@@ -28,5 +28,5 @@ def get_all_files(path, file_type):
 if __name__ == '__main__':
     path = './newData/'
     dset = 'val'
-    print(get_all_hea(path))
+    get_all_hea(path)
     #print(get_all_files(path, ".mat")[0:10])
