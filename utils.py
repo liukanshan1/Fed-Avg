@@ -1,6 +1,7 @@
 import scipy.io
 import os
 
+
 def get_all_mat(path, dset):
     mat_files = get_all_files(path, '.mat')
     mats = []
@@ -14,7 +15,7 @@ def get_all_hea(path):
     heas = []
     for hea_file in hea_files:
         with open(hea_file, 'r') as f:
-            line = f.readlines()[15] # 读取第15行
+            line = f.readlines()[15]  # 读取第15行
             dxs = line[5:-1].split(',')
             for dx in dxs:
                 if dx == '164889003':
@@ -47,3 +48,11 @@ def get_all_files(path, file_type):
         if file_name.endswith(file_type):
             files.append(path + file_name)
     return files
+
+
+def get_file_num(path, file_type):
+    num = 0
+    for file_name in os.listdir(path):
+        if file_name.endswith(file_type):
+            num += 1
+    return num
