@@ -108,7 +108,10 @@ y_score_list = [np.load('./dnn_predicts/other_seeds/model_' + str(i+1) + '.npy')
 
 # %% Get average model model
 # Get micro average precision
-micro_avg_precision = [average_precision_score(y_true[:827, :6], y_score[:, :6], average='micro')
+print(y_true.shape)
+print(y_score_list[0].shape)
+print(y_score_list[1].shape)
+micro_avg_precision = [average_precision_score(y_true[:, :6], y_score[:, :6], average='micro')
                            for y_score in y_score_list]
 # get ordered index
 index = np.argsort(micro_avg_precision)
