@@ -21,7 +21,7 @@ class ECGSequence(Sequence):
         if path_to_csv is None:
             self.y = None
         else:
-            self.y = utils.get_all_hea(path_to_csv)
+            self.y = np.array(utils.get_all_hea(path_to_csv))
         # Get tracings
         self.x = utils.get_all_mat(path_to_hdf5, hdf5_dset)
         self.batch_size = batch_size
