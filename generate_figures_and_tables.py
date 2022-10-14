@@ -17,7 +17,7 @@ def get_scores(y_true, y_pred, score_fun):
     nclasses = np.shape(y_true)[1]
     scores = []
     for name, fun in score_fun.items():
-        scores += [[fun(y_true[:, k], y_pred[:, k]) for k in range(nclasses)]]
+        scores += [[fun(y_true[:, k], y_pred[:, k]) for k in range(6)]]
     return np.array(scores).T
 
 
