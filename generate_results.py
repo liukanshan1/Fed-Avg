@@ -6,26 +6,6 @@ from sklearn.metrics import (confusion_matrix,
 import utils
 
 
-def get_optimal_precision_recall(y_true, y_score):
-    """Find precision and recall values that maximize f1 score."""
-    n = np.shape(y_true)[1]
-    opt_precision = []
-    opt_recall = []
-    opt_threshold = []
-    for k in range(n):
-        # Get precision-recall curve
-        precision, recall, threshold = precision_recall_curve(y_true[:, k], y_score[:, k])
-        # Compute f1 score for each point (use nan_to_num to avoid nans messing up the results)
-        f1_score = np.nan_to_num(2 * precision * recall / (precision + recall))
-        # Select threshold that maximize f1 score
-        index = np.argmax(f1_score)
-        opt_precision.append(precision[index])
-        opt_recall.append(recall[index])
-        t = threshold[index - 1] if index != 0 else threshold[0] - 1e-10
-        opt_threshold.append(t)
-    return np.array(opt_precision), np.array(opt_recall), np.array(opt_threshold)
-
-
 def affer_results(y_true, y_pred):
     """Return true positives, false positives, true negatives, false negatives.
 
@@ -75,4 +55,19 @@ def nomalize(y_pred):
 y_true = np.array(utils.get_all_hea("./data/test_set/"))
 y_pred = nomalize(np.load('./dnn_output.npy'))
 tn, tp, fn, fp, cm = affer_results(y_true, y_pred)
-print("tn, tp, fn, fp")
+m, n = np.shape(y_true)
+conf = [0,0,0,0]
+for i in range(m):
+    for j in range(n):
+        conf[cm[i][j]] += 1
+tnc,tpc,fnc,fpc=conf
+print("tp, fn")
+print("fp, tn")
+print(tpc,fnc)
+print(fpc,tnc)
+print("accuracy:", (tpc+tnc)/(tpc+tnc+fpc+fnc))
+precision = tpc/(tpc+fpc)
+print("precision:",precision)
+recall = tpc/(tpc+fnc)
+print("recall:",recall)
+print("F1-Score:",2*recall*precision/(recall + precision))
