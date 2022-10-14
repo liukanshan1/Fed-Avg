@@ -81,14 +81,9 @@ class ResidualUnit(object):
     def __call__(self, inputs):
         """Residual unit."""
         x, y = inputs
-        print(x)
-        print(y)
-        print(x.shape)
-        print(y.shape)
-        print(self.n_samples_out)
-        n_samples_in = y.shape[2]
+        n_samples_in = y.shape[1]
         downsample = n_samples_in // self.n_samples_out
-        n_filters_in = y.shape[1]
+        n_filters_in = y.shape[2]
         y = self._skip_connection(y, downsample, n_filters_in)
         # 1st layer
         x = Conv1D(self.n_filters_out, self.kernel_size, padding='same',
@@ -120,19 +115,14 @@ class ResidualUnit(object):
 def get_model(n_classes, last_layer='sigmoid'):
     kernel_size = 16
     kernel_initializer = 'he_normal'
-    signal = Input(shape=(12, 4096), dtype=np.float32, name='signal')
+    signal = Input(shape=(4096, 12), dtype=np.float32, name='signal')
     x = signal
-    print(x)
     x = Conv1D(64, kernel_size, padding='same', use_bias=False,
                kernel_initializer=kernel_initializer)(x)
-    print(x)
     x = BatchNormalization()(x)
-    print(x)
     x = Activation('relu')(x)
-    print('1111')
     x, y = ResidualUnit(1024, 128, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, x])
-    print('1112')
     x, y = ResidualUnit(256, 196, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, y])
     x, y = ResidualUnit(64, 256, kernel_size=kernel_size,

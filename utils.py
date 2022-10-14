@@ -1,4 +1,5 @@
 import scipy.io
+import numpy as np
 import os
 
 
@@ -6,7 +7,7 @@ def get_all_mat(path, dset):
     mat_files = get_all_files(path, '.mat')
     mats = []
     for mat_file in mat_files:
-        mats.append(scipy.io.loadmat(mat_file, None)[dset])
+        mats.append(np.rot90(scipy.io.loadmat(mat_file, None)[dset], 1))
     return mats
 
 
