@@ -9,6 +9,7 @@ import seaborn as sns
 import xarray as xr
 from scipy.stats.distributions import chi2
 from itertools import combinations
+import utils
 
 
 # %% Auxiliar functions
@@ -93,14 +94,14 @@ predictor_names = ['DNN', 'cardio.', 'emerg.', 'stud.']
 
 # %% Read datasets
 # Get two annotators
-y_cardiologist1 = pd.read_csv('./data/annotations/cardiologist1.csv').values
-y_cardiologist2 = pd.read_csv('./data/annotations/cardiologist2.csv').values
+#y_cardiologist1 = np.array(utils.get_all_hea("./data/test_set/"))
+#y_cardiologist2 = pd.read_csv('./data/annotations/cardiologist2.csv').values
 # Get true values
-y_true = pd.read_csv('./data/annotations/gold_standard.csv').values
+y_true = np.array(utils.get_all_hea("./data/test_set/"))
 # Get residents and students performance
-y_cardio = pd.read_csv('./data/annotations/cardiology_residents.csv').values
-y_emerg = pd.read_csv('./data/annotations/emergency_residents.csv').values
-y_student = pd.read_csv('./data/annotations/medical_students.csv').values
+#y_cardio = pd.read_csv('./data/annotations/cardiology_residents.csv').values
+#y_emerg = pd.read_csv('./data/annotations/emergency_residents.csv').values
+#y_student = pd.read_csv('./data/annotations/medical_students.csv').values
 # get y_score for different models
 y_score_list = [np.load('./dnn_predicts/other_seeds/model_' + str(i+1) + '.npy') for i in range(10)]
 
@@ -129,7 +130,7 @@ y_neuralnet[mask] = 1
 
 # %% Generate table with scores for the average model (Table 2)
 scores_list = []
-for y_pred in [y_neuralnet, y_cardio, y_emerg, y_student]:
+for y_pred in [y_neuralnet]:
     # Compute scores
     scores = get_scores(y_true, y_pred, score_fun)
     # Put them into a data frame
@@ -215,7 +216,7 @@ for k, name in enumerate(diagnosis):
 # %% Confusion matrices (Supplementary Table 1)
 
 M = [[confusion_matrix(y_true[:, k], y_pred[:, k], labels=[0, 1])
-      for k in range(nclasses)] for y_pred in [y_neuralnet, y_cardio, y_emerg, y_student]]
+      for k in range(nclasses)] for y_pred in [y_neuralnet]]
 
 M_xarray = xr.DataArray(np.array(M),
                         dims=['predictor', 'diagnosis', 'true label', 'predicted label'],
@@ -238,7 +239,7 @@ bootstrap_nsamples = 1000
 percentiles = [2.5, 97.5]
 scores_resampled_list = []
 scores_percentiles_list = []
-for y_pred in [y_neuralnet, y_cardio, y_emerg, y_student]:
+for y_pred in [y_neuralnet]:
     # Compute bootstraped samples
     np.random.seed(123)  # NEVER change this =P
     n, _ = np.shape(y_true)
@@ -308,7 +309,7 @@ scores_resampled_xr.to_dataframe(name='score').to_csv('./outputs/figures/boxplot
 #%% McNemar test  (Supplementary Table 3)
 # Get correct and wrong predictions for each of them (cm >= 2 correspond to wrong predictions)
 wrong_predictions = np.array([affer_results(y_true, y_pred)[4] >= 2
-                              for y_pred in [y_neuralnet, y_cardio, y_emerg, y_student]])
+                              for y_pred in [y_neuralnet]])
 
 # Compute McNemar score
 names = ["DNN", "cardio.", "emerg.", "stud."]
@@ -337,7 +338,7 @@ mcnemar.to_csv("./outputs/tables/mcnemar.csv", float_format='%.3f')
 # %% Kappa score classifiers (Supplementary Table 2(a))
 
 names = ["DNN", "cardio.", "emerg.", "stud."]
-predictors = [y_neuralnet, y_cardio, y_emerg, y_student]
+predictors = [y_neuralnet]
 kappa_name = []
 kappa_score = np.empty((6, 6))
 k = 0
@@ -378,7 +379,7 @@ kappa.to_csv("./outputs/tables/kappa.csv", float_format='%.3f')
 # Compute kappa score
 kappa_list = []
 names_list = []
-raters = [('DNN', y_neuralnet), ('Cert. cardiol. 1', y_cardiologist1), ('Certif. cardiol. 2', y_cardiologist2)]
+raters = [('DNN', y_neuralnet)]
 for r1, r2 in combinations(raters, 2):
     name1, y1 = r1
     name2, y2 = r2
