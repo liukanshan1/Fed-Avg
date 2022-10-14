@@ -81,9 +81,9 @@ class ResidualUnit(object):
     def __call__(self, inputs):
         """Residual unit."""
         x, y = inputs
-        n_samples_in = y.shape[1]
+        n_samples_in = y.shape[2]
         downsample = n_samples_in // self.n_samples_out
-        n_filters_in = y.shape[2]
+        n_filters_in = y.shape[1]
         y = self._skip_connection(y, downsample, n_filters_in)
         # 1st layer
         x = Conv1D(self.n_filters_out, self.kernel_size, padding='same',
