@@ -4,6 +4,7 @@ from tensorflow.keras.callbacks import (ModelCheckpoint, TensorBoard, ReduceLROn
 from model import get_model
 import argparse
 from datasets import ECGSequence
+import timecallback
 
 if __name__ == "__main__":
     # Get data and train
@@ -40,7 +41,7 @@ if __name__ == "__main__":
     model.compile(loss=loss, optimizer=opt)
     # Create log
     callbacks += [TensorBoard(log_dir='./logs', write_graph=False),
-                  CSVLogger('training.log', append=False)]  # Change append to true if continuing training
+                  CSVLogger('training.log', append=False), timecallback()]  # Change append to true if continuing training
     # Save the BEST and LAST model
     callbacks += [ModelCheckpoint('./backup_model_last.hdf5'),
                   ModelCheckpoint('./backup_model_best.hdf5', save_best_only=True)]
