@@ -85,6 +85,7 @@ class ResidualUnit(object):
         print(y)
         print(x.shape)
         print(y.shape)
+        print(self.n_samples_out)
         n_samples_in = y.shape[2]
         downsample = n_samples_in // self.n_samples_out
         n_filters_in = y.shape[1]
@@ -125,8 +126,10 @@ def get_model(n_classes, last_layer='sigmoid'):
                kernel_initializer=kernel_initializer)(x)
     x = BatchNormalization()(x)
     x = Activation('relu')(x)
+    print('1111')
     x, y = ResidualUnit(1024, 128, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, x])
+    print('1112')
     x, y = ResidualUnit(256, 196, kernel_size=kernel_size,
                         kernel_initializer=kernel_initializer)([x, y])
     x, y = ResidualUnit(64, 256, kernel_size=kernel_size,
