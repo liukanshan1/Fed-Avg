@@ -63,4 +63,8 @@ if __name__ == '__main__':
     dset = 'val'
     a = get_all_mat(path, dset)
     print(type(a))
+    print(a)
     print(type(a[0]))
+    print(a[0])
+    print(type(a[0][0]))
+    print(a[0][0])
