@@ -20,7 +20,7 @@ if __name__ == "__main__":
                         help='name of the dataset containing tracings')
     args = parser.parse_args()
     # Optimization settings
-    loss = 'binary_crossentropy'  # TODO
+    loss = 'binary_crossentropy'  # TODO focal loss
     lr = 0.001  # TODO
     batch_size = 64  # TODO
     opt = Adam(lr)
