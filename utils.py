@@ -13,7 +13,7 @@ def get_all_hea(path):
     hea_files = get_all_files(path, '.hea')
     heas = []
     for hea_file in hea_files:
-        with open(hea_file, 'r') as f[0:5]:
+        with open(hea_file, 'r') as f:
             line = f.readlines()[15] # 读取第15行
             dxs = line[5:-1].split(',')
             for dx in dxs:
