@@ -122,9 +122,12 @@ def get_model(n_classes, last_layer='sigmoid'):
     kernel_initializer = 'he_normal'
     signal = Input(shape=(12, 4096), dtype=np.float32, name='signal')
     x = signal
+    print(x)
     x = Conv1D(64, kernel_size, padding='same', use_bias=False,
                kernel_initializer=kernel_initializer)(x)
+    print(x)
     x = BatchNormalization()(x)
+    print(x)
     x = Activation('relu')(x)
     print('1111')
     x, y = ResidualUnit(1024, 128, kernel_size=kernel_size,
