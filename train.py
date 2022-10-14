@@ -17,7 +17,7 @@ if __name__ == "__main__":
                              ' the data is to be used for validation. The remaining '
                              'is used for validation. Default: 0.02')
     parser.add_argument('--dataset_name', type=str, default='val',
-                        help='name of the hdf5 dataset containing tracings')
+                        help='name of the dataset containing tracings')
     args = parser.parse_args()
     # Optimization settings
     loss = 'binary_crossentropy'

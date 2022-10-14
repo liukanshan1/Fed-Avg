@@ -5,7 +5,7 @@ import math
 import pandas as pd
 from tensorflow.keras.utils import Sequence
 import numpy as np
-
+import utils
 
 class ECGSequence(Sequence):
     @classmethod
@@ -21,11 +21,10 @@ class ECGSequence(Sequence):
         if path_to_csv is None:
             self.y = None
         else:
-            self.y = pd.read_csv(path_to_csv).values
+            self.y = utils.get_all_hea(path_to_csv)
+            #pd.read_csv(path_to_csv).values
         # Get tracings
-        # TODO
-        self.f = scipy.io.loadmat(path_to_hdf5, None)
-        self.x = self.f[hdf5_dset]
+        self.x = utils.get_all_mat(path_to_hdf5, hdf5_dset)
 
         self.batch_size = batch_size
         if end_idx is None:
@@ -48,5 +47,5 @@ class ECGSequence(Sequence):
     def __len__(self):
         return math.ceil((self.end_idx - self.start_idx) / self.batch_size)
 
-    def __del__(self):
-        self.f.close()
+"""     def __del__(self):
+        self.f.close() """
