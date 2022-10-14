@@ -16,14 +16,14 @@ class ECGSequence(Sequence):
         valid_seq = cls(path_to_data, dset, path_to_annotations, batch_size, start_idx=n_train)
         return train_seq, valid_seq
 
-    def __init__(self, path_to_hdf5, hdf5_dset, path_to_csv=None, batch_size=8,
+    def __init__(self, path_to_data, hdf5_dset, path_to_annotations=None, batch_size=8,
                  start_idx=0, end_idx=None):
-        if path_to_csv is None:
+        if path_to_annotations is None:
             self.y = None
         else:
-            self.y = np.array(utils.get_all_hea(path_to_csv))
+            self.y = np.array(utils.get_all_hea(path_to_annotations))
         # Get tracings
-        self.x = utils.get_all_mat(path_to_hdf5, hdf5_dset)
+        self.x = utils.get_all_mat(path_to_data, hdf5_dset)
         self.batch_size = batch_size
         if end_idx is None:
             end_idx = len(self.x)
