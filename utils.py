@@ -1,5 +1,4 @@
 import scipy.io
-import glob
 
 def get_all_mat(path, dset):
     mat_files = get_all_files(path, '.mat')
@@ -14,14 +13,15 @@ def get_all_hea(path):
 
 
 def get_all_files(path, file_type):
-    files = []
-    for file_abs in glob.glob(path): #TODO 绝对路径，优化
-        if file_abs.endswith(file_type):
-            files.append(file_abs)
-    return files
+    root, dirs, files = os.walk(path)
+    result = []
+    for file in files:
+        if file.endswith(file_type):
+            result.append(file_abs)
+    return result
 
 if __name__ == '__main__':
     path = './newData/'
     dset = 'val'
-    print(get_all_mat(path, dset))
+    #print(get_all_mat(path, dset))
     print(get_all_files(path, ".mat"))
