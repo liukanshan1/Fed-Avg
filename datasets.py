@@ -23,7 +23,7 @@ class ECGSequence(Sequence):
         else:
             self.y = np.array(utils.get_all_hea(path_to_annotations))
         # Get tracings
-        self.x = utils.get_all_mat(path_to_data, hdf5_dset)
+        self.x = np.array(utils.get_all_mat(path_to_data, hdf5_dset))
         self.batch_size = batch_size
         if end_idx is None:
             end_idx = len(self.x)
