@@ -12,5 +12,5 @@ $ python predict.py .\data\test_set\ .\final_model.hdf5
 
 - ``generate_figures_and_tables.py``: Generate results.
  ```bash
-$ python generate_figures_and_tables.py
+$ python generate_results.py
  ```
