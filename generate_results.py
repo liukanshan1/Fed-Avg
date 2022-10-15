@@ -82,3 +82,7 @@ classes = [0, 0, 0, 0, 0, 0, 0]
 for i in range(m):
     classes[y_true[i].argmax()] += 1
 print(classes)
+sum = sum(classes)
+print(sum)
+classes = 1 - classes/sum
+print(classes)
