@@ -15,7 +15,7 @@ class ResidualUnit(object):
     kernel_initializer: str, optional
         Initializer for the weights matrices. See Keras initializers. By default it uses
         'he_normal'.
-    dropout_keep_prob: float [0, 1), optional
+    dropout_keep_prob: float [0, 1), optional  # TODO 0.75
         Dropout rate used in all Dropout layers. Default is 0.8
     kernel_size: int, optional
         Kernel size for convolutional layers. Default is 17.
