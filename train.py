@@ -22,7 +22,7 @@ if __name__ == "__main__":
     # Optimization settings
     loss = 'binary_crossentropy'  # TODO focal loss
     lr = 0.001  # TODO
-    batch_size = 64  # TODO
+    batch_size = 64
     opt = Adam(lr)
     callbacks = [ReduceLROnPlateau(monitor='val_loss',
                                    factor=0.1,
