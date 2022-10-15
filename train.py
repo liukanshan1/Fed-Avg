@@ -57,7 +57,7 @@ def multi_category_focal_loss2(gamma=2., alpha=.25):
     
         alpha_t = y_true*alpha + (tf.ones_like(y_true)-y_true)*(1-alpha)
         y_t = tf.multiply(y_true, y_pred) + tf.multiply(1-y_true, 1-y_pred)
-        ce = -tf.log(y_t)
+        ce = -tf.math.log(y_t)
         weight = tf.pow(tf.subtract(1., y_t), gamma)
         fl = tf.multiply(tf.multiply(weight, ce), alpha_t)
         loss = tf.reduce_mean(fl)
