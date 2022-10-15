@@ -6,60 +6,30 @@ from model import get_model
 import argparse
 from datasets import ECGSequence
 
-def focal_loss(logits, labels, epsilon=1.e-7,
-               gamma=2.0,
-               multi_dim=False):
-    '''
-        :param logits:  [batch_size, n_class]
-        :param labels: [batch_size]  not one-hot !!!
-        :return: -alpha*(1-y)^r * log(y)
-        它是在哪实现 1- y 的？ 通过gather选择的就是1-p,而不是通过计算实现的；
-        logits soft max之后是多个类别的概率，也就是二分类时候的1-P和P；多分类的时候不是1-p了；
-
-        怎么把alpha的权重加上去？
-        通过gather把alpha选择后变成batch长度，同时达到了选择和维度变换的目的
-
-        是否需要对logits转换后的概率值进行限制？
-        需要的，避免极端情况的影响
-
-        针对输入是 (N，P，C )和  (N，P)怎么处理？
-        先把他转换为和常规的一样形状，（N*P，C） 和 （N*P,）
-
-        bug:
-        ValueError: Cannot convert an unknown Dimension to a Tensor: ?
-        因为输入的尺寸有时是未知的，导致了该bug,如果batchsize是确定的，可以直接修改为batchsize
-
-        '''
-
-    # 注意，alpha是一个和你的分类类别数量相等的向量；
-    alpha = [[1], [1], [1], [1], [1], [1], [1]]
-
-    if multi_dim:
-        logits = tf.reshape(logits, [-1, logits.shape[2]])
-        labels = tf.reshape(labels, [-1])
-
-    # (Class ,1)
+def multi_category_focal_loss1(alpha, gamma=2.0):
+    """
+    focal loss for multi category of multi label problem
+    适用于多分类或多标签问题的focal loss
+    alpha用于指定不同类别/标签的权重，数组大小需要与类别个数一致
+    当你的数据集不同类别/标签之间存在偏斜，可以尝试适用本函数作为loss
+    Usage:
+     model.compile(loss=[multi_category_focal_loss1(alpha=[1,2,3,2], gamma=2)], metrics=["accuracy"], optimizer=adam)
+    """
+    epsilon = 1.e-7
     alpha = tf.constant(alpha, dtype=tf.float32)
-
-    labels = tf.cast(labels, dtype=tf.int32)
-    logits = tf.cast(logits, tf.float32)
-    # (N,Class) > N*Class
-    softmax = tf.reshape(tf.nn.softmax(logits), [-1])  # [batch_size * n_class]
-    # (N,) > (N,) ,但是数值变换了，变成了每个label在N*Class中的位置
-    labels_shift = tf.range(0, logits.shape[0]) * logits.shape[1] + labels
-    # labels_shift = tf.range(0, batch_size*32) * logits.shape[1] + labels
-    # (N*Class,) > (N,)
-    prob = tf.gather(softmax, labels_shift)
-    # 预防预测概率值为0的情况  ; (N,)
-    prob = tf.clip_by_value(prob, epsilon, 1. - epsilon)
-    # (Class ,1) > (N,)
-    alpha_choice = tf.gather(alpha, labels)
-    # (N,) > (N,)
-    weight = tf.pow(tf.subtract(1., prob), gamma)
-    weight = tf.multiply(alpha_choice, weight)
-    # (N,) > 1
-    loss = -tf.reduce_mean(tf.multiply(weight, tf.log(prob)))
-    return loss
+    alpha = tf.constant([[0.96098], [0.80820], [0.99651], [0.61015], [0.80857], [0.83103], [0.98454]], dtype=tf.float32)
+    alpha = tf.constant_initializer(alpha)
+    gamma = float(gamma)
+    def multi_category_focal_loss1_fixed(y_true, y_pred):
+        y_true = tf.cast(y_true, tf.float32)
+        y_pred = tf.clip_by_value(y_pred, epsilon, 1. - epsilon)
+        y_t = tf.multiply(y_true, y_pred) + tf.multiply(1-y_true, 1-y_pred)
+        ce = -tf.log(y_t)
+        weight = tf.pow(tf.subtract(1., y_t), gamma)
+        fl = tf.matmul(tf.multiply(weight, ce), alpha)
+        loss = tf.reduce_mean(fl)
+        return loss
+    return multi_category_focal_loss1_fixed
 
 
 if __name__ == "__main__":
