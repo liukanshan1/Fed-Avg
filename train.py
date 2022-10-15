@@ -26,13 +26,43 @@ def multi_category_focal_loss1(alpha, gamma=2.0):
         y_true = tf.cast(y_true, tf.float32)
         y_pred = tf.clip_by_value(y_pred, epsilon, 1. - epsilon)
         y_t = tf.multiply(y_true, y_pred) + tf.multiply(1 - y_true, 1 - y_pred)
-        ce = -tf.log(y_t)
+        ce = -tf.math.log(y_t)
         weight = tf.pow(tf.subtract(1., y_t), gamma)
         fl = tf.matmul(tf.multiply(weight, ce), alpha)
         loss = tf.reduce_mean(fl)
         return loss
 
     return multi_category_focal_loss1_fixed
+
+def multi_category_focal_loss2(gamma=2., alpha=.25):
+    """
+    focal loss for multi category of multi label problem
+    适用于多分类或多标签问题的focal loss
+    alpha控制真值y_true为1/0时的权重
+        1的权重为alpha, 0的权重为1-alpha
+    当你的模型欠拟合，学习存在困难时，可以尝试适用本函数作为loss
+    当模型过于激进(无论何时总是倾向于预测出1),尝试将alpha调小
+    当模型过于惰性(无论何时总是倾向于预测出0,或是某一个固定的常数,说明没有学到有效特征)
+        尝试将alpha调大,鼓励模型进行预测出1。
+    Usage:
+     model.compile(loss=[multi_category_focal_loss2(alpha=0.25, gamma=2)], metrics=["accuracy"], optimizer=adam)
+    """
+    epsilon = 1.e-7
+    gamma = float(gamma)
+    alpha = tf.constant(alpha, dtype=tf.float32)
+
+    def multi_category_focal_loss2_fixed(y_true, y_pred):
+        y_true = tf.cast(y_true, tf.float32)
+        y_pred = tf.clip_by_value(y_pred, epsilon, 1. - epsilon)
+    
+        alpha_t = y_true*alpha + (tf.ones_like(y_true)-y_true)*(1-alpha)
+        y_t = tf.multiply(y_true, y_pred) + tf.multiply(1-y_true, 1-y_pred)
+        ce = -tf.log(y_t)
+        weight = tf.pow(tf.subtract(1., y_t), gamma)
+        fl = tf.multiply(tf.multiply(weight, ce), alpha_t)
+        loss = tf.reduce_mean(fl)
+        return loss
+    return multi_category_focal_loss2_fixed
 
 
 if __name__ == "__main__":
@@ -52,7 +82,7 @@ if __name__ == "__main__":
     # Optimization settings
     loss = [
         multi_category_focal_loss1(alpha=[[0.96098], [0.80820], [0.99651], [0.61015], [0.80857], [0.83103], [0.98454]],
-                                   gamma=2)]
+                                   gamma=2)]  #  'binary_crossentropy'
     lr = 0.001
     batch_size = 64
     opt = Adam(lr)
