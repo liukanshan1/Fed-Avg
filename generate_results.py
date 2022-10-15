@@ -84,5 +84,5 @@ for i in range(m):
 print(classes)
 sum = sum(classes)
 print(sum)
-classes = 1 - classes/sum
-print(classes)
+for i in classes:
+    print(1-i/sum)
