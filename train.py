@@ -6,11 +6,7 @@ from model import get_model
 import argparse
 from datasets import ECGSequence
 
-# 注意，alpha是一个和你的分类类别数量相等的向量；
-alpha = [[1], [1], [1], [1], [1], [1], [1]]
-
-
-def focal_loss(logits, labels, alpha, epsilon=1.e-7,
+def focal_loss(logits, labels, epsilon=1.e-7,
                gamma=2.0,
                multi_dim=False):
     '''
@@ -34,6 +30,9 @@ def focal_loss(logits, labels, alpha, epsilon=1.e-7,
         因为输入的尺寸有时是未知的，导致了该bug,如果batchsize是确定的，可以直接修改为batchsize
 
         '''
+
+    # 注意，alpha是一个和你的分类类别数量相等的向量；
+    alpha = [[1], [1], [1], [1], [1], [1], [1]]
 
     if multi_dim:
         logits = tf.reshape(logits, [-1, logits.shape[2]])

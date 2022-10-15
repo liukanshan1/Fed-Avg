@@ -71,3 +71,8 @@ print("precision:", precision)
 recall = tpc / (tpc + fnc)
 print("recall:", recall)
 print("F1-Score:", 2 * recall * precision / (recall + precision))
+
+classes = [0, 0, 0, 0, 0, 0, 0]
+for i in range(m):
+    classes[y_true[i].argmax()] += 1
+print(classes)
