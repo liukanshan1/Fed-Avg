@@ -76,3 +76,9 @@ classes = [0, 0, 0, 0, 0, 0, 0]
 for i in range(m):
     classes[y_true[i].argmax()] += 1
 print(classes)
+y_true = np.array(utils.get_all_hea("./data/"))
+m, n = np.shape(y_true)
+classes = [0, 0, 0, 0, 0, 0, 0]
+for i in range(m):
+    classes[y_true[i].argmax()] += 1
+print(classes)
