@@ -57,7 +57,7 @@ def multi_category_focal_loss2(gamma=2., alpha=.25):
     
         alpha_t = y_true*alpha + (tf.ones_like(y_true)-y_true)*(1-alpha)
         y_t = tf.multiply(y_true, y_pred) + tf.multiply(1-y_true, 1-y_pred)
-        ce = -tf.log(y_t)
+        ce = -tf.math.log(y_t)
         weight = tf.pow(tf.subtract(1., y_t), gamma)
         fl = tf.multiply(tf.multiply(weight, ce), alpha_t)
         loss = tf.reduce_mean(fl)
@@ -80,9 +80,7 @@ if __name__ == "__main__":
                         help='name of the dataset containing tracings')
     args = parser.parse_args()
     # Optimization settings
-    loss = [
-        multi_category_focal_loss1(alpha=[[0.96098], [0.80820], [0.99651], [0.61015], [0.80857], [0.83103], [0.98454]],
-                                   gamma=2)]  #  'binary_crossentropy'
+    loss = [multi_category_focal_loss2(gamma=2., alpha=.25)]  #  'binary_crossentropy'
     lr = 0.001
     batch_size = 64
     opt = Adam(lr)
