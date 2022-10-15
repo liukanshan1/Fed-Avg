@@ -21,7 +21,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     # Optimization settings
     loss = 'binary_crossentropy'  # TODO focal loss
-    lr = 0.001  # TODO
+    lr = 0.001  # TODO 0.03 0.04 0.05
     batch_size = 64
     opt = Adam(lr)
     callbacks = [ReduceLROnPlateau(monitor='val_loss',
