@@ -1,4 +1,4 @@
-## Scripts
+ ## Scripts
 
 - ``train.py``: Script for training the neural network. To train the neural network run: 
 ```bash
