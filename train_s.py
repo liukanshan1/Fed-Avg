@@ -12,9 +12,12 @@ import pickle
 
 class Aggregator:
 
-    def __init__(self):
+    def __init__(self, num):
         # self.weight = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-        self.weight = np.array([1])
+        weight = []
+        for i in range(num):
+            weight.append(1.0/num)
+        self.weight = np.array(weight)
 
     def aggregate(self, delta, m_weights):
         delta = np.array(delta)

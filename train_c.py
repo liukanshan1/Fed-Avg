@@ -120,7 +120,7 @@ if __name__ == "__main__":
     clientSocket = socket(AF_INET, SOCK_STREAM)
     clientSocket.connect((args.ip_address, args.port))
     print("connected!")
-    
+
     for i in range(25):
         print("ep", i)
         message = clientSocket.recv(204800000)
