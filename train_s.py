@@ -41,9 +41,7 @@ if __name__ == "__main__":
     lr = 0.001
     batch_size = 64
     opt = Adam(lr)
-    train_seq, valid_seq = ECGSequence.get_train_and_val(
-        args.path_to_data, args.dataset_name, args.path_to_annotations, batch_size, args.val_split)
-    model = get_model(train_seq.n_classes)
+    model = get_model(7)
     model.compile(loss=loss, optimizer=opt)
     # 建立连接
     print("Waiting...")
@@ -57,16 +55,17 @@ if __name__ == "__main__":
         address.append(0)
         weights.append(0)
     global_weights = model.get_weights()
-    aggregator = Aggregator()
+    aggregator = Aggregator(args.CLIENT_NUM)
     for i in range(args.CLIENT_NUM):
         connectionSocket[i], address[i] = serverSocket.accept()
         print(address, "connected!")
+    for i in range(args.CLIENT_NUM):
         print("Send start signal")
         connectionSocket[i].send(b'st')
     for j in range(25):
         print("ep", j)
         for i in range(args.CLIENT_NUM):
-            message = connectionSocket[i].recv(204800000)
+            message = connectionSocket[i].recv(20480000000)
             print("receive ", i, "th client weights")
             if len(message) > 10:
                 weights[i] = pickle.loads(message)
