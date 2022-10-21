@@ -43,11 +43,6 @@ if __name__ == "__main__":
     opt = Adam(lr)
     model = get_model(7)
     model.compile(loss=loss, optimizer=opt)
-    # 建立连接
-    print("Waiting...")
-    serverSocket = socket(AF_INET, SOCK_STREAM)
-    serverSocket.bind((args.ip_address, args.port))
-    serverSocket.listen(args.CLIENT_NUM)
     connectionSocket, address = [], []
     weights = []
     for _ in range(args.CLIENT_NUM):
@@ -56,7 +51,12 @@ if __name__ == "__main__":
         weights.append(0)
     global_weights = model.get_weights()
     aggregator = Aggregator(args.CLIENT_NUM)
+    # 建立连接
     for i in range(args.CLIENT_NUM):
+        print("Waiting ", i, "th client join...")
+        serverSocket = socket(AF_INET, SOCK_STREAM)
+        serverSocket.bind((args.ip_address, args.port + i))
+        serverSocket.listen(1)
         connectionSocket[i], address[i] = serverSocket.accept()
         print(address, "connected!")
     for i in range(args.CLIENT_NUM):
