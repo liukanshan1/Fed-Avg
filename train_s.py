@@ -13,7 +13,8 @@ import pickle
 class Aggregator:
 
     def __init__(self):
-        self.weight = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+        #self.weight = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
+        self.weight = np.array([1])
 
     def aggregate(self, delta, m_weights):
         delta = np.array(delta)
@@ -63,25 +64,32 @@ if __name__ == "__main__":
                   ModelCheckpoint('./backup_model_best.hdf5', save_best_only=True)]
     
     # 建立连接
+    print("Waiting...")
+    CLIENT_NUM = 1
     serverSocket = socket(AF_INET, SOCK_STREAM)
-    serverSocket.bind(("192.168.1.25"), 1200)
+    serverSocket.bind(("192.168.20.119", 1200))
     serverSocket.listen(6)
-    connectionSocket, address = [], []
-    weights = np.array([])
+    connectionSocket, address = [0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0]
+    weights = [0]
     global_weights = model.get_weights()
     aggregator = Aggregator()
-    for i in range(5):
+    for i in range(CLIENT_NUM):
         connectionSocket[i], address[i] = serverSocket.accept()
+        print(address, "connected!")
+        print("Send start signal")
         connectionSocket[i].send(b'st')
-    for _ in range(25):
-        for i in range(5):
-            message = connectionSocket[i].recv(204800)
+    for j in range(25):
+        print("ep", j)
+        for i in range(CLIENT_NUM):
+            message = connectionSocket[i].recv(204800000)
+            print("receive ", i, "th client weights")
             if len(message) > 10:
                 weights[i] = pickle.loads(message)
-        global_weights = aggregator.aggregate(global_weights, weights)
-        for i in range(5):
-            connectionSocket[i].send(pickle.dump(global_weights))
-    for i in range(5):
+        global_weights = aggregator.aggregate(global_weights, np.array(weights))
+        for i in range(CLIENT_NUM):
+            print("Sending new weights")
+            connectionSocket[i].send(pickle.dumps(global_weights))
+    for i in range(CLIENT_NUM):
         connectionSocket[i].close()
     # Save final result
     model.set_weights(global_weights)
