@@ -75,6 +75,10 @@ if __name__ == "__main__":
                         help='path to data dir containing tracings')
     parser.add_argument('path_to_annotations', type=str,
                         help='path to dir containing annotations')
+    parser.add_argument('ip_address', type=str,
+                        help='server ip address')
+    parser.add_argument('port', type=int, default=1200,
+                        help='listen port')
     parser.add_argument('--val_split', type=float, default=0.02,
                         help='number between 0 and 1 determining how much of'
                              ' the data is to be used for validation. The remaining '
@@ -113,22 +117,21 @@ if __name__ == "__main__":
     
     # 建立连接
     print("conneting...")
-    host_name = "192.168.20.119"  # 服务器 ip 地址
-    port_num = 1200
     clientSocket = socket(AF_INET, SOCK_STREAM)
-    clientSocket.connect((host_name, port_num))
+    clientSocket.connect((args.ip_address, args.port))
     print("connected!")
+    
     for i in range(25):
         print("ep", i)
         message = clientSocket.recv(204800000)
         if len(message) > 10:
             global_weights = pickle.loads(message)
-            model.set_weights(global_weights) # 从服务器获取参数
+            model.set_weights(global_weights)  # 从服务器获取参数
             print("get weights from server.")
         # Train neural network
         history = model.fit(train_seq,
                             epochs=2,
-                            initial_epoch=0,  # If you are continuing a interrupted section change here
+                            initial_epoch=0,
                             callbacks=callbacks,
                             validation_data=valid_seq,
                             verbose=1)
