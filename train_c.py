@@ -112,16 +112,19 @@ if __name__ == "__main__":
                   ModelCheckpoint('./backup_model_best.hdf5', save_best_only=True)]
     
     # 建立连接
-    host_name = "192.168.1.25"  # 服务器 ip 地址
+    print("conneting...")
+    host_name = "192.168.20.119"  # 服务器 ip 地址
     port_num = 1200
     clientSocket = socket(AF_INET, SOCK_STREAM)
     clientSocket.connect((host_name, port_num))
-
+    print("connected!")
     for i in range(25):
-        message = clientSocket.recv(204800)
+        print("ep", i)
+        message = clientSocket.recv(204800000)
         if len(message) > 10:
-            global_weights = pickle.loads()
+            global_weights = pickle.loads(message)
             model.set_weights(global_weights) # 从服务器获取参数
+            print("get weights from server.")
         # Train neural network
         history = model.fit(train_seq,
                             epochs=2,
@@ -130,6 +133,7 @@ if __name__ == "__main__":
                             validation_data=valid_seq,
                             verbose=1)
         weights = pickle.dumps(model.get_weights())
+        print("send weights to server.")
         clientSocket.send(weights)
 
     clientSocket.send(b'break')
