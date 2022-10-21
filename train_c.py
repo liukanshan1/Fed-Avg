@@ -1,3 +1,5 @@
+from socket import *
+
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import (ModelCheckpoint, TensorBoard, ReduceLROnPlateau,
                                         CSVLogger, EarlyStopping)
@@ -5,6 +7,7 @@ import tensorflow as tf
 from model import get_model
 import argparse
 from datasets import ECGSequence
+import pickle
 
 
 def multi_category_focal_loss1(alpha, gamma=2.0):
@@ -107,12 +110,28 @@ if __name__ == "__main__":
     # Save the BEST and LAST model
     callbacks += [ModelCheckpoint('./backup_model_last.hdf5'),
                   ModelCheckpoint('./backup_model_best.hdf5', save_best_only=True)]
-    # Train neural network
-    history = model.fit(train_seq,
-                        epochs=70,
-                        initial_epoch=0,  # If you are continuing a interrupted section change here
-                        callbacks=callbacks,
-                        validation_data=valid_seq,
-                        verbose=1)
-    # Save final result
-    model.save("./final_model.hdf5")
+    
+    # 建立连接
+    host_name = "192.168.1.25"  # 服务器 ip 地址
+    port_num = 1200
+    clientSocket = socket(AF_INET, SOCK_STREAM)
+    clientSocket.connect((host_name, port_num))
+
+    for i in range(25):
+        message = clientSocket.recv(204800)
+        if len(message) > 10:
+            global_weights = pickle.loads()
+            model.set_weights(global_weights) # 从服务器获取参数
+        # Train neural network
+        history = model.fit(train_seq,
+                            epochs=2,
+                            initial_epoch=0,  # If you are continuing a interrupted section change here
+                            callbacks=callbacks,
+                            validation_data=valid_seq,
+                            verbose=1)
+        weights = pickle.dumps(model.get_weights())
+        clientSocket.send(weights)
+
+    clientSocket.send(b'break')
+    clientSocket.close()
+
