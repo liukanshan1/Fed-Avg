@@ -1,4 +1,7 @@
 from socket import *
+from struct import pack
+import threading
+import time
 
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import (ModelCheckpoint, TensorBoard, ReduceLROnPlateau,
@@ -14,17 +17,43 @@ class Aggregator:
 
     def __init__(self, num):
         # self.weight = np.array([0.2, 0.2, 0.2, 0.2, 0.2])
-        weight = []
+        self.weight = []
         for i in range(num):
-            weight.append(1.0/num)
-        self.weight = np.array(weight)
+            self.weight.append(1.0/num)
+        self.n = num
 
     def aggregate(self, delta, m_weights):
         delta = np.array(delta)
-        temp = np.dot(self.weight, m_weights)
+        temp = self.weight[0] * np.array(m_weights[0])
+        for i in range(1, self.n):
+            temp += self.weight[i] * np.array(m_weights[i])
         temp -= delta
         delta += temp
         return delta
+
+
+def receive(socket, i):
+    message = []
+    while True:
+        packet = socket.recv(4096)
+        if not packet: break
+        message.append(packet)
+        if len(packet) < 4096:
+            break
+    message = b"".join(message)
+    print("receive ", i, "th client weights", len(message))
+    if len(message) > 10:
+        weights[i] = pickle.loads(message)
+        global count
+        mutex.acquire()
+        count += 1
+        print(count)
+        mutex.release()
+        
+
+weights = []
+count = 0
+mutex = threading.Lock()
 
 
 if __name__ == "__main__":
@@ -43,36 +72,37 @@ if __name__ == "__main__":
     opt = Adam(lr)
     model = get_model(7)
     model.compile(loss=loss, optimizer=opt)
-    connectionSocket, address = [], []
-    weights = []
+    connectionSocket = []
     for _ in range(args.CLIENT_NUM):
         connectionSocket.append(0)
-        address.append(0)
         weights.append(0)
     global_weights = model.get_weights()
     aggregator = Aggregator(args.CLIENT_NUM)
     # 建立连接
+    serverSocket = socket(AF_INET, SOCK_STREAM)
+    serverSocket.bind((args.ip_address, args.port))
+    serverSocket.listen(args.CLIENT_NUM)
     for i in range(args.CLIENT_NUM):
         print("Waiting ", i, "th client join...")
-        serverSocket = socket(AF_INET, SOCK_STREAM)
-        serverSocket.bind((args.ip_address, args.port + i))
-        serverSocket.listen(1)
-        connectionSocket[i], address[i] = serverSocket.accept()
+        connectionSocket[i], address = serverSocket.accept()
         print(address, "connected!")
     for i in range(args.CLIENT_NUM):
         print("Send start signal")
         connectionSocket[i].send(b'st')
     for j in range(25):
         print("ep", j)
+        count = 0
         for i in range(args.CLIENT_NUM):
-            message = connectionSocket[i].recv(20480000000)
-            print("receive ", i, "th client weights")
-            if len(message) > 10:
-                weights[i] = pickle.loads(message)
+            threads = threading.Thread(target=receive, args=(connectionSocket[i], i))
+            threads.start()
+        while True:
+            if(count != 0 and count % args.CLIENT_NUM == 0):
+                break
         global_weights = aggregator.aggregate(global_weights, np.array(weights))
         for i in range(args.CLIENT_NUM):
             print("Sending new weights")
-            connectionSocket[i].send(pickle.dumps(global_weights))
+            connectionSocket[i].sendall(pickle.dumps(global_weights))
+            time.sleep(5)
     for i in range(args.CLIENT_NUM):
         connectionSocket[i].close()
     # Save final result
