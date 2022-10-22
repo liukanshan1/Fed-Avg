@@ -77,9 +77,9 @@ if __name__ == "__main__":
                         help='path to dir containing annotations')
     parser.add_argument('ip_address', type=str,
                         help='server ip address')
-    parser.add_argument('port', type=int, default=1200,
+    parser.add_argument('--port', type=int, default=1200,
                         help='listen port')
-    parser.add_argument('epoch', type=int, default=25,
+    parser.add_argument('--epoch', type=int, default=25,
                         help='epoch')
     parser.add_argument('--val_split', type=float, default=0.02,
                         help='number between 0 and 1 determining how much of'

@@ -66,13 +66,13 @@ mutex = threading.Lock()
 if __name__ == "__main__":
     # Get data and train
     parser = argparse.ArgumentParser(description='Train neural network.')
-    parser.add_argument('ip_address', type=str,
-                        help='server ip address')
-    parser.add_argument('port', type=int, default=1200,
-                        help='listen port')
     parser.add_argument('CLIENT_NUM', type=int, default=5,
                         help='client number')
-    parser.add_argument('epoch', type=int, default=25,
+    parser.add_argument('ip_address', type=str,
+                        help='server ip address')
+    parser.add_argument('--port', type=int, default=1200,
+                        help='listen port')
+    parser.add_argument('--epoch', type=int, default=25,
                         help='epoch')
     args = parser.parse_args()
     loss = 'binary_crossentropy'
