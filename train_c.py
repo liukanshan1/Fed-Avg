@@ -136,9 +136,9 @@ if __name__ == "__main__":
                             validation_data=valid_seq,
                             verbose=1)
         weights = pickle.dumps(model.get_weights())
-        print("send weights to server.")
-        clientSocket.send(weights)
+        print("send weights to server.", len(weights))
+        clientSocket.sendall(weights)
 
-    clientSocket.send(b'break')
+    clientSocket.sendall(b'break')
     clientSocket.close()
 
