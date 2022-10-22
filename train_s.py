@@ -33,21 +33,28 @@ class Aggregator:
 
 
 def receive(socket, i):
-    message = []
-    while True:
-        packet = socket.recv(4096)
-        if not packet: break
-        message.append(packet)
-        if len(packet) < 4096:
-            break
-    message = b"".join(message)
+    # message = []
+    # while True:
+    #     packet = socket.recv(4096)
+    #     if not packet: break
+    #     message.append(packet)
+    #     if len(packet) < 4096:
+    #         break
+    # message = b"".join(message)
+    # print("receive ", i, "th client weights", len(message))
+    # if len(message) > 10:
+    #     weights[i] = pickle.loads(message)
+    #     global count
+    #     mutex.acquire()
+    #     count += 1
+    #     mutex.release()
+    message = socket.recv(204800000)
     print("receive ", i, "th client weights", len(message))
     if len(message) > 10:
         weights[i] = pickle.loads(message)
         global count
         mutex.acquire()
         count += 1
-        print(count)
         mutex.release()
         
 
@@ -96,13 +103,12 @@ if __name__ == "__main__":
             threads = threading.Thread(target=receive, args=(connectionSocket[i], i))
             threads.start()
         while True:
-            if(count != 0 and count % args.CLIENT_NUM == 0):
+            if count != 0 and count % args.CLIENT_NUM == 0:
                 break
         global_weights = aggregator.aggregate(global_weights, np.array(weights))
         for i in range(args.CLIENT_NUM):
             print("Sending new weights")
             connectionSocket[i].sendall(pickle.dumps(global_weights))
-            time.sleep(5)
     for i in range(args.CLIENT_NUM):
         connectionSocket[i].close()
     # Save final result
