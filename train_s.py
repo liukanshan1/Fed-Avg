@@ -72,6 +72,8 @@ if __name__ == "__main__":
                         help='listen port')
     parser.add_argument('CLIENT_NUM', type=int, default=5,
                         help='client number')
+    parser.add_argument('epoch', type=int, default=25,
+                        help='epoch')
     args = parser.parse_args()
     loss = 'binary_crossentropy'
     lr = 0.001
@@ -96,7 +98,7 @@ if __name__ == "__main__":
     for i in range(args.CLIENT_NUM):
         print("Send start signal")
         connectionSocket[i].send(b'st')
-    for j in range(25):
+    for j in range(args.epoch):
         print("ep", j)
         count = 0
         for i in range(args.CLIENT_NUM):

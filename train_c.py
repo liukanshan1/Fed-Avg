@@ -79,6 +79,8 @@ if __name__ == "__main__":
                         help='server ip address')
     parser.add_argument('port', type=int, default=1200,
                         help='listen port')
+    parser.add_argument('epoch', type=int, default=25,
+                        help='epoch')
     parser.add_argument('--val_split', type=float, default=0.02,
                         help='number between 0 and 1 determining how much of'
                              ' the data is to be used for validation. The remaining '
@@ -121,7 +123,7 @@ if __name__ == "__main__":
     clientSocket.connect((args.ip_address, args.port))
     print("connected!")
 
-    for i in range(25):
+    for i in range(args.epoch):
         print("ep", i)
         message = clientSocket.recv(204800000)
         if len(message) > 10:
