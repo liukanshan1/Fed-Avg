@@ -89,10 +89,10 @@ if __name__ == "__main__":
                         help='name of the dataset containing tracings')
     args = parser.parse_args()
     # Optimization settings
-    # loss = [
-    #     multi_category_focal_loss1(alpha=[[0.96098], [0.80820], [0.99651], [0.61015], [0.80857], [0.83103], [0.98454]],
-    #                                gamma=2)]  #  'binary_crossentropy'
-    loss = 'binary_crossentropy'
+    loss = [
+         multi_category_focal_loss1(alpha=[[0.96098], [0.80820], [0.99651], [0.61015], [0.80857], [0.83103], [0.98454]],
+                                   gamma=2)]  #  'binary_crossentropy'
+    # loss = 'binary_crossentropy'
     lr = 0.001
     batch_size = 64
     opt = Adam(lr)
